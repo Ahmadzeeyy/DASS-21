@@ -18,6 +18,10 @@ except ImportError:
 
 app = Flask(__name__)
 
+# Mengatasi bug Read-only file system di Vercel dengan memindahkan instance_path ke /tmp yang writable
+if os.environ.get('VERCEL') or 'VERCEL' in os.environ:
+    app.instance_path = '/tmp'
+
 # Konfigurasi Database: Menggunakan PostgreSQL (Supabase) jika ada di environment variable, fallback ke SQLite untuk lokal
 database_url = os.environ.get('DATABASE_URL')
 if database_url:
