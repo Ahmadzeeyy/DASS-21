@@ -334,7 +334,7 @@ def send_whatsapp_alert(nama, dep, anx, str_score, i_dep, i_anx, i_str):
     kategori = "Depresi" if i_dep in ['Berat', 'Sangat Berat'] else \
                "Kecemasan" if i_anx in ['Berat', 'Sangat Berat'] else "Stres"
     
-    pesan = f"Halo dr. Ashoka Sulityasmara, ada pasien a.n {nama} yang hasil skrining DASS-21 nya {kategori} (Skor: {max_score}). Mohon tindak lanjutnya."
+    pesan = f"Halo dr. Ashoka Sulistyasmara, ada pasien a.n {nama} yang hasil skrining DASS-21 nya {kategori} (Skor: {max_score}). Mohon tindak lanjutnya."
     link_wa = f"https://wa.me/{DR_ASHOKA_WA}?text={urllib.parse.quote(pesan)}"
     
     print(f"🚨 ALERT: {link_wa}")
