@@ -24,7 +24,7 @@ if os.environ.get('VERCEL') or 'VERCEL' in os.environ:
     app.instance_path = '/tmp'
 
 # Konfigurasi Database: Menggunakan PostgreSQL (Supabase) jika ada di environment variable, fallback ke SQLite untuk lokal
-database_url = os.environ.get('DATABASE_URL')
+database_url = os.environ.get('DATABASE_URL') or os.environ.get('supabase_db') or os.environ.get('SUPABASE_DB')
 if database_url:
     if database_url.startswith('postgres://'):
         database_url = database_url.replace('postgres://', 'postgresql://', 1)
