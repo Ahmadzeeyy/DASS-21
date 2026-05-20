@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - DASS-21</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            padding: 15px;
+            background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+
+        /* ADMIN ACTIONS (Export & Delete) */
+        .admin-actions {
+            text-align: right;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+        }
+
+        .btn-export {
+            display: inline-block;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #10B981, #059669);
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            transition: 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-export:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-export.excel {
+            background: linear-gradient(135deg, #2563EB, #1D4ED8);
+        }
+
+        .btn-clear-all {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        .btn-clear-all:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4);
+        }
+
+        /* DESKTOP TABLE */
+        .desktop-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            display: table;
+        }
+
+        .desktop-table thead {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
+        }
+
+        .desktop-table th,
+        .desktop-table td {
+            padding: 14px 12px;
+            text-align: left;
+            border-bottom: 1px solid #ecf0f1;
+        }
+
+        .desktop-table tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .status-critical {
+            background: #fde8e8;
+            color: #dc2626;
+        }
+
+        .status-safe {
+            background: #d1fae5;
+            color: #059669;
+        }
+
+        .wa-btn {
+            display: inline-block;
+            padding: 8px 16px;
+            background: linear-gradient(135deg, #25D366, #128C7E);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            transition: 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .wa-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(37, 211, 102, 0.4);
+        }
+
+        .btn-delete {
+            padding: 8px 16px;
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            margin-left: 5px;
+            transition: 0.3s;
+        }
+
+        .btn-delete:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(239, 68, 68, 0.4);
+        }
+
+        /* MOBILE CARD VIEW */
+        .mobile-cards {
+            display: none;
+        }
+
+        .response-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            border-left: 5px solid #ddd;
+            transition: 0.3s;
+        }
+
+        .response-card.critical {
+            border-left-color: #ef4444;
+            background: linear-gradient(135deg, #fef2f2, #ffffff);
+        }
+
+        .response-card.safe {
+            border-left-color: #10b981;
+            background: linear-gradient(135deg, #ecfdf5, #ffffff);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .card-name {
+            font-size: 16px;
+            font-weight: 700;
+            color: #2c3e50;
+        }
+
+        .card-time {
+            font-size: 12px;
+            color: #7f8c8d;
+        }
+
+        .card-scores {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .score-box {
+            background: white;
+            padding: 12px 8px;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid #eee;
+        }
+
+        .score-box.critical {
+            background: #fef2f2;
+            border-color: #fca5a5;
+        }
+
+        .score-box.safe {
+            background: #ecfdf5;
+            border-color: #6ee7b7;
+        }
+
+        .score-label {
+            font-size: 10px;
+            color: #7f8c8d;
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .score-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: #2c3e50;
+        }
+
+        .score-status {
+            font-size: 10px;
+            padding: 3px 8px;
+            border-radius: 10px;
+            margin-top: 5px;
+            display: inline-block;
+            font-weight: 600;
+        }
+
+        .card-footer {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .card-footer .wa-btn,
+        .card-footer .btn-delete {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            font-size: 12px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #7f8c8d;
+        }
+
+        .empty-state-icon {
+            font-size: 50px;
+            margin-bottom: 15px;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .container {
+                padding: 20px 15px;
+            }
+
+            .header h1 {
+                font-size: 20px;
+            }
+
+            .desktop-table {
+                display: none;
+            }
+
+            .mobile-cards {
+                display: block;
+            }
+
+            .admin-actions {
+                text-align: center;
+                justify-content: center;
+                flex-direction: column;
+            }
+
+            .admin-actions a,
+            .admin-actions form,
+            .admin-actions button {
+                width: 100%;
+            }
+
+            .btn-clear-all,
+            .btn-export {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+
+            .card-scores {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .score-value {
+                font-size: 18px;
+            }
+
+            .card-footer {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 Riwayat Scales</h1>
+            <p>Total pengiriman: {{ responses|length }}</p>
+        </div>
+
+        <!-- ⚠️ TOMBOL AKSI (EXPORT & HAPUS) - SELALU MUNCUL DI ATAS -->
+        <div class="admin-actions">
+            <a href="/admin/export" class="btn-export">
+                📥 Export CSV
+            </a>
+            
+            <a href="/admin/export-excel" class="btn-export excel">
+                📊 Export Excel
+            </a>
+            
+            <form action="/admin/clear-all" method="POST" style="display:inline;">
+                <button type="submit" class="btn-clear-all" 
+                        onclick="return confirm('Yakin ingin menghapus SEMUA data?')">
+                    🗑️ Hapus Semua Data
+                </button>
+            </form>
+        </div>
+
+        <!-- DESKTOP TABLE VIEW -->
+        <table class="desktop-table">
+            <thead>
+                <tr>
+                    <th>Waktu</th>
+                    <th>Nama</th>
+                    <th>Depresi</th>
+                    <th>Kecemasan</th>
+                    <th>Stres</th>
+                    <th>Status</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for r in responses %}
+                <tr class="{{ 'critical' if 'BUTUH' in r.status else 'normal' }}">
+                    <td>{{ r.timestamp.strftime('%Y-%m-%d %H:%M') }}</td>
+                    <td>{{ r.nama }}</td>
+                    <td>{{ r.skor_depresi }} ({{ r.ket_depresi }})</td>
+                    <td>{{ r.skor_kecemasan }} ({{ r.ket_kecemasan }})</td>
+                    <td>{{ r.skor_stres }} ({{ r.ket_stres }})</td>
+                    <td>
+                        <span class="status-badge {{ 'status-critical' if 'BUTUH' in r.status else 'status-safe' }}">
+                            {{ r.status }}
+                        </span>
+                    </td>
+                    <td>
+                        {% if 'BUTUH' in r.status %}
+                        <a href="https://wa.me/6281230032017?text=Halo dr. ashoka sulistyasmara, pasien {{ r.nama }} butuh bantuan" 
+                           class="wa-btn" target="_blank">
+                            📞 dr. Ashoka Sulistyasmara
+                        </a>
+                        {% endif %}
+                        
+                        <form action="/admin/delete/{{ r.id }}" method="POST" style="display:inline;">
+                            <button type="submit" class="btn-delete" 
+                                    onclick="return confirm('Hapus data {{ r.nama }}?')">
+                                🗑️
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- MOBILE CARD VIEW -->
+        <div class="mobile-cards">
+            {% for r in responses %}
+            <div class="response-card {{ 'critical' if 'BUTUH' in r.status else 'safe' }}">
+                <div class="card-header">
+                    <div>
+                        <div class="card-name">{{ r.nama }}</div>
+                        <div class="card-time">🕐 {{ r.timestamp.strftime('%d/%m/%Y %H:%M') }}</div>
+                    </div>
+                    <span class="status-badge {{ 'status-critical' if 'BUTUH' in r.status else 'status-safe' }}">
+                        {{ r.status }}
+                    </span>
+                </div>
+
+                <div class="card-scores">
+                    <div class="score-box {{ 'critical' if r.ket_depresi in ['Berat', 'Sangat Berat'] else 'safe' }}">
+                        <div class="score-label">🧠 Depresi</div>
+                        <div class="score-value">{{ r.skor_depresi }}</div>
+                        <div class="score-status {{ 'status-critical' if r.ket_depresi in ['Berat', 'Sangat Berat'] else 'status-safe' }}">
+                            {{ r.ket_depresi }}
+                        </div>
+                    </div>
+
+                    <div class="score-box {{ 'critical' if r.ket_kecemasan in ['Berat', 'Sangat Berat'] else 'safe' }}">
+                        <div class="score-label">😰 Kecemasan</div>
+                        <div class="score-value">{{ r.skor_kecemasan }}</div>
+                        <div class="score-status {{ 'status-critical' if r.ket_kecemasan in ['Berat', 'Sangat Berat'] else 'status-safe' }}">
+                            {{ r.ket_kecemasan }}
+                        </div>
+                    </div>
+
+                    <div class="score-box {{ 'critical' if r.ket_stres in ['Berat', 'Sangat Berat'] else 'safe' }}">
+                        <div class="score-label">😤 Stres</div>
+                        <div class="score-value">{{ r.skor_stres }}</div>
+                        <div class="score-status {{ 'status-critical' if r.ket_stres in ['Berat', 'Sangat Berat'] else 'status-safe' }}">
+                            {{ r.ket_stres }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-footer">
+                    {% if 'BUTUH' in r.status %}
+                    <a href="https://wa.me/6281230032017?text=Halo dr. ashoka sulistyasmara, pasien {{ r.nama }} butuh bantuan" 
+                       class="wa-btn" target="_blank">
+                        📞 Hubungi dr. Ashoka Sulistyasmara
+                    </a>
+                    {% endif %}
+                    
+                    <form action="/admin/delete/{{ r.id }}" method="POST" style="display:inline; flex:1;">
+                        <button type="submit" class="btn-delete" 
+                                onclick="return confirm('Hapus data {{ r.nama }}?')">
+                            🗑️ Hapus Data
+                        </button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- EMPTY STATE (Jika tidak ada data) -->
+        {% if responses|length == 0 %}
+        <div class="empty-state">
+            <div class="empty-state-icon">📭</div>
+            <h3>Belum ada data yang masuk</h3>
+            <p>Responden akan muncul di sini setelah mengisi form</p>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>

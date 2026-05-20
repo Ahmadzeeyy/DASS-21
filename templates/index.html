@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>DASS-21 | Self Assessment</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='filter.css') }}">
+</head>
+<body>
+    
+    <div class="main-wrapper">
+        <header class="header">
+            <h1>📋 FORM DATA ANXIETY</h1>
+            <p>Depression Anxiety Stress Scales</p>
+        </header>
+
+        <div class="container">
+            <!-- Instruksi -->
+            <div class="info-card">
+                <h3>Petunjuk Pengisian:</h3>
+                <ol>
+                    <li>Bacalah seluruh pertanyaan sebelum mulai mengisi</li>
+                    <li>Pilih angka 0, 1, 2, atau 3 yang menunjukkan kondisi Anda <strong>1 minggu terakhir</strong></li>
+                    <li>Tidak ada jawaban salah atau benar</li>
+                    <li>Jawaban Anda bersifat <stro>rahasia</strong></li>
+                </ol>
+            </div>
+
+            <form id="dassForm">
+                <div class="form-group">
+                    <label for="nama">Nama Lengkap</label>
+                    <input type="text" id="nama" name="nama" placeholder="Masukkan nama Anda" required>
+                </div>
+
+                <div id="questions-container">
+                    <!-- Pertanyaan akan muncul di sini -->
+                </div>
+
+                <button type="submit" class="btn-submit">
+                    <span>Kirim Jawaban </span>
+                    <span class="arrow">→</span>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ⚠️ MODAL DI LUAR CONTAINER (PENTING!) -->
+    <div id="result-modal" class="modal" style="display:none;">
+        <div class="modal-content">
+            <div class="success-icon" id="modal-icon">✓</div>
+            <h2 id="modal-title">Terima Kasih!</h2>
+            
+            <p>Jawaban Anda telah berhasil disimpan.</p>
+            
+            <!-- AREA HASIL ANALISIS -->
+            <div id="analysis-result" class="analysis-box" style="display:none;">
+                <!-- Konten akan diisi oleh JavaScript -->
+            </div>
+
+            <button onclick="location.reload()" class="btn-secondary">Kembali</button>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
