@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Admin - DASS-21</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+        }
+
+        .login-card {
+            background: #ffffff;
+            width: 100%;
+            max-width: 420px;
+            padding: 35px 30px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+            border-top: 6px solid #0f3f7a;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .logo-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .logo-img {
+            height: 70px;
+            width: auto;
+            object-fit: contain;
+            mix-blend-mode: multiply;
+        }
+
+        .gov-name {
+            font-size: 11px;
+            font-weight: 800;
+            color: #0f3f7a;
+            letter-spacing: 0.5px;
+            margin-top: -10px;
+            margin-bottom: 3px;
+            text-transform: uppercase;
+            text-align: center;
+        }
+
+        .hospital-name {
+            font-size: 14px;
+            font-weight: 800; /* Dibuat lebih tebal/bold sesuai permintaan */
+            color: #111111; /* Diubah menjadi warna hitam sesuai permintaan */
+            letter-spacing: 0.5px;
+            margin-top: 0px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            text-align: center;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .login-header h2 {
+            font-size: 22px;
+            color: #2c3e50;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .login-header p {
+            color: #7f8c8d;
+            font-size: 13px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 13px;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 40px 12px 14px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            color: #2d3748;
+        }
+
+        .form-group input:focus {
+            border-color: #0f3f7a;
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(15, 63, 122, 0.1);
+        }
+
+        /* Toggle password visibility */
+        .password-toggle {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #a0aec0;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4px;
+            transition: color 0.2s;
+        }
+
+        .password-toggle:hover {
+            color: #4a5568;
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #0f3f7a, #1e5fa8);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(15, 63, 122, 0.2);
+            margin-top: 10px;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 18px rgba(15, 63, 122, 0.3);
+        }
+
+        .btn-login:active {
+            transform: translateY(0);
+        }
+
+        /* Alert/Error styles */
+        .alert-error {
+            background-color: #fff5f5;
+            border: 1px solid #fed7d7;
+            color: #c53030;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 500;
+            animation: shake 0.4s ease;
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #718096;
+            font-size: 13px;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .back-link:hover {
+            color: #0f3f7a;
+            text-decoration: underline;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-6px); }
+            75% { transform: translateX(6px); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-card">
+        <div class="logo-container">
+            <img src="{{ url_for('static', filename='assets/logo rs.png') }}" alt="Logo RS" class="logo-img">
+        </div>
+        <div class="gov-name">PEMERINTAH KOTA SURABAYA</div>
+        <div class="hospital-name">RSUD dr. Mohamad Soewandhie</div>
+        
+        <div class="login-header">
+            <h2>Portal Admin</h2>
+            <p>Silakan masuk untuk mengelola data DASS-21</p>
+        </div>
+
+        {% if error %}
+        <div class="alert-error">
+            ⚠️ {{ error }}
+        </div>
+        {% endif %}
+
+        <form action="/login" method="POST">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <div class="input-wrapper">
+                    <input type="text" id="username" name="username" placeholder="Masukkan username" required autofocus autocomplete="off">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <div class="input-wrapper">
+                    <input type="password" id="password" name="password" placeholder="Masukkan password" required autocomplete="off">
+                    <button type="button" class="password-toggle" id="togglePassword" title="Tampilkan Password">
+                        👁️
+                    </button>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-login">Masuk Aplikasi</button>
+        </form>
+
+        <a href="/" class="back-link">← Kembali ke Form Asesmen</a>
+    </div>
+
+    <script>
+        const togglePassword = document.querySelector('#togglePassword');
+        const passwordInput = document.querySelector('#password');
+
+        togglePassword.addEventListener('click', function () {
+            // Toggle type attribute
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            
+            // Toggle eye icon
+            this.textContent = type === 'password' ? '👁️' : '🙈';
+            this.title = type === 'password' ? 'Tampilkan Password' : 'Sembunyikan Password';
+        });
+    </script>
+</body>
+</html>

@@ -26,21 +26,70 @@ body {
 
 /* ── HEADER ────────────────────────────────────────────────── */
 .header {
-  text-align: center;
+  background: #ffffff;
+  padding: 30px 20px;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(149, 157, 165, 0.06);
+  border-top: 6px solid #0f3f7a; /* Warna biru gelap menyelaraskan dengan logo */
   margin-bottom: 20px;
-  padding-top: 10px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
 }
 
-.header h1 {
-  color: #2c3e50;
-  font-size: 24px;
-  font-weight: 600;
+.logo-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   margin-bottom: 5px;
 }
 
+.logo-img {
+  height: 80px; /* Diperbesar sedikit agar lebih jelas sesuai permintaan */
+  width: auto;
+  object-fit: contain;
+  mix-blend-mode: multiply; /* Menyamarkan/menghilangkan background putih pada logo */
+  display: block;
+}
+
+.gov-name {
+  font-size: 12px;
+  font-weight: 800;
+  color: #0f3f7a; /* Warna biru resmi */
+  letter-spacing: 1px;
+  margin-top: 8px;
+  margin-bottom: 3px;
+  text-transform: uppercase;
+}
+
+.hospital-name {
+  font-size: 16px;
+  font-weight: 800; /* Bold tebal */
+  color: #111111; /* Diubah menjadi warna hitam sesuai permintaan */
+  letter-spacing: 1px;
+  margin-top: 0px;
+  margin-bottom: 15px;
+  text-transform: uppercase;
+}
+
+.header h1 {
+  color: #111111;
+  font-size: 24px;
+  font-weight: 700;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
 .header p {
-  color: #7f8c8d;
+  color: #666666;
   font-size: 13px;
+  margin: 0;
+  font-weight: 400;
 }
 
 /* ── CONTAINER ─────────────────────────────────────────────── */

@@ -1,5 +1,6 @@
-from flask import Flask, render_template, request, jsonify, redirect, url_for, send_file
+from flask import Flask, render_template, request, jsonify, redirect, url_for, send_file, send_from_directory, session
 from flask_sqlalchemy import SQLAlchemy
+from functools import wraps
 from datetime import datetime
 import requests                                                                             
 import urllib.parse
@@ -33,6 +34,15 @@ else:
 
 app.config['SECRET_KEY'] = 'your-secret-key-here'
 db = SQLAlchemy(app)
+
+# ── DECORATOR AUTH ADMIN ──────────────────────────────────────────────────────
+def admin_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not session.get('admin_logged_in'):
+            return redirect(url_for('login'))
+        return f(*args, **kwargs)
+    return decorated_function
 
 # ── KONFIGURASI ────────────────────────────────────────────────────────────────
 DR_ASHOKA_WA = "6281230032017"  # Nomor WhatsApp Dr. Ashoka
@@ -89,7 +99,36 @@ def hitung_skor(answers):
 def index():
     return render_template('index.html')
 
+@app.route('/assets/<path:filename>')
+def serve_assets(filename):
+    return send_from_directory(os.path.join(app.root_path, 'assets'), filename)
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if session.get('admin_logged_in'):
+        return redirect(url_for('admin'))
+        
+    error = None
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+        
+        # Validasi kredensial (Username: das, Password: kombinasi kuat)
+        if username == 'das' and password == 'D@ss21_AdmLn!2026':
+            session['admin_logged_in'] = True
+            return redirect(url_for('admin'))
+        else:
+            error = 'Username atau password salah!'
+            
+    return render_template('login.html', error=error)
+
+@app.route('/logout')
+def logout():
+    session.pop('admin_logged_in', None)
+    return redirect(url_for('login'))
+
 @app.route('/admin')
+@admin_required
 def admin():
     responses = Response.query.order_by(Response.timestamp.desc()).all()
     return render_template('admin.html', responses=responses)
@@ -151,6 +190,7 @@ def submit():
         return jsonify({'success': False, 'message': str(e)}), 500
 
 @app.route('/admin/delete/<int:id>', methods=['POST'])
+@admin_required
 def delete_response(id):
     response = Response.query.get_or_404(id)
     db.session.delete(response)
@@ -158,6 +198,7 @@ def delete_response(id):
     return redirect(url_for('admin'))
 
 @app.route('/admin/clear-all', methods=['POST'])
+@admin_required
 def clear_all():
     Response.query.delete()
     db.session.commit()
@@ -165,6 +206,7 @@ def clear_all():
 
 # ── EXPORT KE CSV (EXCEL) - DIPERBAIKI ───────────────────────────────────────
 @app.route('/admin/export')
+@admin_required
 def export_csv():
     responses = Response.query.order_by(Response.timestamp.desc()).all()
     
@@ -209,6 +251,7 @@ def export_csv():
 
 # ── EXPORT KE EXCEL (.XLSX) ─────────────────────────────────────────────────
 @app.route('/admin/export-excel')
+@admin_required
 def export_excel():
     if not EXCEL_AVAILABLE:
         return jsonify({'error': 'Library openpyxl tidak terinstall. Jalankan: pip install openpyxl'}), 500
